@@ -1,0 +1,75 @@
+@model Nop.Plugin.Misc.DigitalCodes.Models.ConfigurationModel
+@{
+    Layout = "_ConfigurePlugin";
+}
+
+@await Component.InvokeAsync(typeof(StoreScopeConfigurationViewComponent))
+
+<form asp-controller="DigitalCodes" asp-action="Configure" method="post">
+    <div class="cards-group">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="EnableWebhook_OverrideForStore" asp-input="EnableWebhook" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="EnableWebhook" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="EnableWebhook" />
+                        <span asp-validation-for="EnableWebhook"></span>
+                        <div class="text-muted"><small>@T("Plugins.Misc.DigitalCodes.Fields.EnableWebhook.Hint")</small></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="WebhookUrl_OverrideForStore" asp-input="WebhookUrl" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="WebhookUrl" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="WebhookUrl" />
+                        <span asp-validation-for="WebhookUrl"></span>
+                        <div class="text-muted"><small>@T("Plugins.Misc.DigitalCodes.Fields.WebhookUrl.Hint")</small></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="Secret_OverrideForStore" asp-input="Secret" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="Secret" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="Secret" />
+                        <span asp-validation-for="Secret"></span>
+                        <div class="text-muted"><small>@T("Plugins.Misc.DigitalCodes.Fields.Secret.Hint")</small></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="TimeoutSeconds_OverrideForStore" asp-input="TimeoutSeconds" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="TimeoutSeconds" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="TimeoutSeconds" />
+                        <span asp-validation-for="TimeoutSeconds"></span>
+                        <div class="text-muted"><small>@T("Plugins.Misc.DigitalCodes.Fields.TimeoutSeconds.Hint")</small></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="RetryCount_OverrideForStore" asp-input="RetryCount" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="RetryCount" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="RetryCount" />
+                        <span asp-validation-for="RetryCount"></span>
+                        <div class="text-muted"><small>@T("Plugins.Misc.DigitalCodes.Fields.RetryCount.Hint")</small></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-9 offset-md-3">
+                        <button type="submit" name="save" class="btn btn-primary">@T("Admin.Common.Save")</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

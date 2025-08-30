@@ -1,0 +1,84 @@
+@model Nop.Plugin.Misc.DigitalCodes.Models.CodePool.CodePoolModel
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.PageTitle = T("Plugins.Misc.DigitalCodes.CodePools.Create").Text;
+    NopHtml.SetActiveMenuItemSystemName("DigitalCodes.CodePools");
+}
+
+<form asp-area="Admin" asp-controller="DigitalCodes" asp-action="CodePoolCreate" method="post">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <div class="cards-group">
+                    <div class="card card-default">
+                        <div class="card-header">
+                            @T("Admin.Common.Info")
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="Name" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="Name" />
+                                    <span asp-validation-for="Name"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="ProductId" />
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="product-autocomplete" autocomplete="off" />
+                                    <script asp-location="Footer">
+                                        $(function () {
+                                            $('#product-autocomplete').autocomplete({
+                                                delay: 500,
+                                                minLength: 3,
+                                                source: '@Url.Action("SearchAutoComplete", "SearchComplete")',
+                                                select: function (event, ui) {
+                                                    $('#@Html.IdFor(model => model.ProductId)').val(ui.item.productid);
+                                                    $('#product-friendly-name').text(ui.item.label);
+                                                    $('#product-clear').show();
+                                                    return false;
+                                                }
+                                            });
+                                        });
+                                    </script>
+                                    <span id="product-friendly-name">@Model.ProductName</span>
+                                    <button type="button" id="product-clear" class="btn bg-gray" style="display: @(Model.ProductId.HasValue ? "inline-block" : "none"); margin-top: 5px;">@T("Admin.Common.Clear")</button>
+                                    <input asp-for="ProductId" autocomplete="off" style="display:none;" />
+                                    <script asp-location="Footer">
+                                        $('#product-clear').click(function () {
+                                            $('#@Html.IdFor(model => model.ProductId)').val('0');
+                                            $('#product-friendly-name').text('');
+                                            $('#product-clear').hide();
+                                            return false;
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <nop-label asp-for="IsActive" />
+                                </div>
+                                <div class="col-md-9">
+                                    <nop-editor asp-for="IsActive" />
+                                    <span asp-validation-for="IsActive"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" name="save" class="btn btn-primary">
+                                <i class="far fa-floppy-disk"></i>
+                                @T("Admin.Common.Save")
+                            </button>
+                            <a class="btn btn-default" href="@Url.Content("~/Admin/DigitalCodes/CodePools")">@T("Admin.Common.BackToList")</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

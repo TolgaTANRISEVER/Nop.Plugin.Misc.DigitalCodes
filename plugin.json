@@ -1,0 +1,11 @@
+{
+  "Group": "Misc",
+  "FriendlyName": "Digital Codes (E-Pin)",
+  "SystemName": "Misc.DigitalCodes",
+  "Version": "4.80.9",
+  "SupportedVersions": [ "4.80" ],
+  "Author": "Tolga",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Misc.DigitalCodes.dll",
+  "Description": "E-pin / dijital kod teslimatı için temel eklenti."
+}

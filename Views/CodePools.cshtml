@@ -1,0 +1,154 @@
+@using Nop.Web.Framework.UI
+@model Nop.Plugin.Misc.DigitalCodes.Models.CodePool.CodePoolSearchModel
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.PageTitle = T("Plugins.Misc.DigitalCodes.CodePools").Text;
+    NopHtml.SetActiveMenuItemSystemName("DigitalCodes.CodePools");
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <div class="card card-default card-search">
+                    <div class="card-body">
+                        <div class="row search-row opened" data-hideAttribute="DigitalCodes.CodePools.HideSearchBlock">
+                            <div class="search-text">@T("Admin.Common.Search")</div>
+                            <div class="icon-search"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></div>
+                            <div class="icon-collapse"><i class="far fa-angle-up" aria-hidden="true"></i></div>
+                        </div>
+                        <div class="search-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-label asp-for="SearchName" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <nop-editor asp-for="SearchName" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <nop-label asp-for="SearchProductId" />
+                                        </div>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" id="search-product-name" autocomplete="off" />
+                                            <script asp-location="Footer">
+                                                $(function () {
+                                                    $('#search-product-name').autocomplete({
+                                                        delay: 500,
+                                                        minLength: 3,
+                                                        source: '@Url.Action("SearchAutoComplete", "SearchComplete")',
+                                                        select: function (event, ui) {
+                                                            $('#@Html.IdFor(model => model.SearchProductId)').val(ui.item.productid);
+                                                            $('#search-product-friendly-name').text(ui.item.label);
+                                                            $('#search-product-clear').show();
+                                                            return false;
+                                                        }
+                                                    });
+                                                });
+                                            </script>
+                                            <span id="search-product-friendly-name"></span>
+                                            <button type="button" id="search-product-clear" class="btn bg-gray" style="display: none; margin-top: 5px;">@T("Admin.Common.Clear")</button>
+                                            <input asp-for="SearchProductId" autocomplete="off" style="display: none;" />
+                                            <script asp-location="Footer">
+                                                $('#search-product-clear').click(function () {
+                                                    $('#@Html.IdFor(model => model.SearchProductId)').val('0');
+                                                    $('#search-product-friendly-name').text('');
+                                                    $('#search-product-clear').hide();
+                                                    return false;
+                                                });
+                                            </script>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="text-center col-12">
+                                    <button type="button" id="search-codepools" class="btn btn-primary btn-search">
+                                        <i class="fas fa-magnifying-glass"></i>
+                                        @T("Admin.Common.Search")
+                                    </button>
+                                    <a class="btn btn-primary" href="@Url.Content("~/Admin/DigitalCodes/CodePoolCreate")">
+                                        <i class="fas fa-plus"></i>
+                                        @T("Admin.Common.AddNew")
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-default">
+                    <div class="card-body">
+                        @await Html.PartialAsync("Table", new DataTablesModel
+                        {
+                            Name = "codepools-grid",
+                            UrlRead = new DataUrl("CodePoolList", "DigitalCodes", null),
+                            UrlDelete = new DataUrl("CodePoolDelete", "DigitalCodes", null),
+                            SearchButtonId = "search-codepools",
+                            Length = Model.PageSize,
+                            LengthMenu = Model.AvailablePageSizes,
+                            Filters = new List<FilterParameter>
+                            {
+                                new FilterParameter(nameof(Model.SearchName)),
+                                new FilterParameter(nameof(Model.SearchProductId))
+                            },
+                            ColumnCollection = new List<ColumnProperty>
+                            {
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodePool.CodePoolModel.Name))
+                                {
+                                    Title = T("Plugins.Misc.DigitalCodes.Fields.PoolName").Text,
+                                    Width = "250"
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodePool.CodePoolModel.ProductName))
+                                {
+                                    Title = T("Admin.Catalog.Products.Fields.Product").Text,
+                                    Width = "250",
+                                    Render = new RenderLink(new DataUrl("~/Admin/Product/Edit/", nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodePool.CodePoolModel.ProductId)))
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodePool.CodePoolModel.IsActive))
+                                {
+                                    Title = T("Admin.Common.Active").Text,
+                                    Width = "100",
+                                    ClassName = NopColumnClassDefaults.CenterAll,
+                                    Render = new RenderBoolean()
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodePool.CodePoolModel.CreatedOnUtc))
+                                {
+                                    Title = T("Admin.Common.CreatedOn").Text,
+                                    Width = "150",
+                                    Render = new RenderDate()
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodePool.CodePoolModel.UpdatedOnUtc))
+                                {
+                                    Title = T("Admin.Common.UpdatedOn").Text,
+                                    Width = "150",
+                                    Render = new RenderDate()
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodePool.CodePoolModel.Id))
+                                {
+                                    Title = T("Admin.Common.Edit").Text,
+                                    Width = "100",
+                                    ClassName = NopColumnClassDefaults.Button,
+                                    Render = new RenderButtonEdit(new DataUrl("~/Admin/DigitalCodes/CodePoolEdit/"))
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodePool.CodePoolModel.Id))
+                                {
+                                    Title = T("Admin.Common.Delete").Text,
+                                    Width = "100",
+                                    ClassName = NopColumnClassDefaults.Button,
+                                    Render = new RenderButtonRemove(T("Admin.Common.Delete").Text)
+                                }
+                            }
+                        })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

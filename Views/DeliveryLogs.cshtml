@@ -1,0 +1,143 @@
+@using Nop.Web.Framework.UI
+@model Nop.Plugin.Misc.DigitalCodes.Models.DeliveryLog.DeliveryLogSearchModel
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.PageTitle = "Teslimat Logları";
+    NopHtml.SetActiveMenuItemSystemName("DigitalCodes.DeliveryLogs");
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <div class="card card-default card-search">
+                    <div class="card-body">
+                        <div class="row search-row opened" data-hideAttribute="DigitalCodes.DeliveryLogs.HideSearchBlock">
+                            <div class="search-text">@T("Admin.Common.Search")</div>
+                            <div class="icon-search"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></div>
+                            <div class="icon-collapse"><i class="far fa-angle-up" aria-hidden="true"></i></div>
+                        </div>
+                        <div class="search-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group row">
+                                        <div class="col-md-5">
+                                            <nop-label asp-for="SearchOrderId"/>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <input type="number" class="form-control" asp-for="SearchOrderId"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group row">
+                                        <div class="col-md-5">
+                                            <nop-label asp-for="SearchOrderItemId"/>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <input type="number" class="form-control" asp-for="SearchOrderItemId"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group row">
+                                        <div class="col-md-5">
+                                            <nop-label asp-for="SearchCodeItemId"/>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <input type="number" class="form-control" asp-for="SearchCodeItemId"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group row">
+                                        <div class="col-md-5">
+                                            <nop-label asp-for="SearchChannel"/>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <nop-editor asp-for="SearchChannel"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="text-center col-12">
+                                    <button type="button" id="search-deliverylogs" class="btn btn-primary btn-search">
+                                        <i class="fas fa-magnifying-glass"></i>
+                                        @T("Admin.Common.Search")
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-default">
+                    <div class="card-body">
+                        @await Html.PartialAsync("Table", new DataTablesModel
+                        {
+                            Name = "deliverylogs-grid",
+                            UrlRead = new DataUrl("DeliveryLogList", "DigitalCodes", null),
+                            SearchButtonId = "search-deliverylogs",
+                            Length = Model.PageSize,
+                            LengthMenu = Model.AvailablePageSizes,
+                            Filters = new List<FilterParameter>
+                            {
+                                new FilterParameter(nameof(Model.SearchOrderId)),
+                                new FilterParameter(nameof(Model.SearchOrderItemId)),
+                                new FilterParameter(nameof(Model.SearchCodeItemId)),
+                                new FilterParameter(nameof(Model.SearchChannel))
+                            },
+                            ColumnCollection = new List<ColumnProperty>
+                            {
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.DeliveryLog.DeliveryLogModel.OrderId))
+                                {
+                                    Title = "Sipariş",
+                                    Width = "100"
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.DeliveryLog.DeliveryLogModel.OrderItemId))
+                                {
+                                    Title = "Sipariş Kalemi",
+                                    Width = "120"
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.DeliveryLog.DeliveryLogModel.CodeItemId))
+                                {
+                                    Title = "Kod Kalemi",
+                                    Width = "120"
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.DeliveryLog.DeliveryLogModel.Channel))
+                                {
+                                    Title = "Kanal",
+                                    Width = "120"
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.DeliveryLog.DeliveryLogModel.To))
+                                {
+                                    Title = "Hedef",
+                                    Width = "200"
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.DeliveryLog.DeliveryLogModel.Result))
+                                {
+                                    Title = "Sonuç",
+                                    Width = "140"
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.DeliveryLog.DeliveryLogModel.Message))
+                                {
+                                    Title = "Mesaj",
+                                    Width = "250"
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.DeliveryLog.DeliveryLogModel.CreatedOnUtc))
+                                {
+                                    Title = @T("Admin.Common.CreatedOn").Text,
+                                    Width = "150",
+                                    Render = new RenderDate()
+                                }
+                            }
+                        })
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

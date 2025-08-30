@@ -1,0 +1,176 @@
+@using Nop.Web.Framework.UI
+@model Nop.Plugin.Misc.DigitalCodes.Models.CodeItem.CodeItemSearchModel
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.PageTitle = T("Plugins.Misc.DigitalCodes.CodeItems").Text;
+    NopHtml.SetActiveMenuItemSystemName("DigitalCodes.CodeItems");
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <div class="card card-default card-search">
+                    <div class="card-body">
+                        <div class="row search-row opened" data-hideAttribute="DigitalCodes.CodeItems.HideSearchBlock">
+                            <div class="search-text">@T("Admin.Common.Search")</div>
+                            <div class="icon-search"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></div>
+                            <div class="icon-collapse"><i class="far fa-angle-up" aria-hidden="true"></i></div>
+                        </div>
+                        <div class="search-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group row">
+                                        <div class="col-md-5">
+                                            <nop-label asp-for="SearchCodePoolId"/>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <input type="number" class="form-control" asp-for="SearchCodePoolId"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group row">
+                                        <div class="col-md-5">
+                                            <nop-label asp-for="SearchStatus"/>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <nop-editor asp-for="SearchStatus"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group row">
+                                        <div class="col-md-5">
+                                            <nop-label asp-for="SearchOrderItemId"/>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <input type="number" class="form-control" asp-for="SearchOrderItemId"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group row">
+                                        <div class="col-md-5">
+                                            <nop-label asp-for="SearchCode"/>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <nop-editor asp-for="SearchCode"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="text-center col-12">
+                                    <button type="button" id="search-codeitems" class="btn btn-primary btn-search">
+                                        <i class="fas fa-magnifying-glass"></i>
+                                        @T("Admin.Common.Search")
+                                    </button>
+                                    <button type="button" id="add-codeitem" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i>
+                                        @T("Admin.Common.AddNew")
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-default">
+                    <div class="card-body">
+                        @await Html.PartialAsync("Table", new DataTablesModel
+                        {
+                            Name = "codeitems-grid",
+                            UrlRead = new DataUrl("CodeItemList", "DigitalCodes", null),
+                            UrlDelete = new DataUrl("CodeItemDelete", "DigitalCodes", null),
+                            SearchButtonId = "search-codeitems",
+                            Length = Model.PageSize,
+                            LengthMenu = Model.AvailablePageSizes,
+                            Filters = new List<FilterParameter>
+                            {
+                                new FilterParameter(nameof(Model.SearchCodePoolId)),
+                                new FilterParameter(nameof(Model.SearchStatus)),
+                                new FilterParameter(nameof(Model.SearchOrderItemId)),
+                                new FilterParameter(nameof(Model.SearchCode))
+                            },
+                            ColumnCollection = new List<ColumnProperty>
+                            {
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodeItem.CodeItemModel.CodePoolName))
+                                {
+                                    Title = "Havuz",
+                                    Width = "200"
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodeItem.CodeItemModel.Code))
+                                {
+                                    Title = "Kod",
+                                    Width = "200"
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodeItem.CodeItemModel.Pin))
+                                {
+                                    Title = "Pin",
+                                    Width = "120"
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodeItem.CodeItemModel.Serial))
+                                {
+                                    Title = "Seri",
+                                    Width = "150"
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodeItem.CodeItemModel.ExpireOnUtc))
+                                {
+                                    Title = @T("Admin.Promotions.Discounts.Fields.StartDate").Text,
+                                    Width = "150",
+                                    Render = new RenderDate()
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodeItem.CodeItemModel.StatusText))
+                                {
+                                    Title = "Durum",
+                                    Width = "120"
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodeItem.CodeItemModel.OrderInfo))
+                                {
+                                    Title = "Sipariş",
+                                    Width = "160"
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodeItem.CodeItemModel.CreatedOnUtc))
+                                {
+                                    Title = @T("Admin.Common.CreatedOn").Text,
+                                    Width = "150",
+                                    Render = new RenderDate()
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodeItem.CodeItemModel.Id))
+                                {
+                                    Title = @T("Admin.Common.Edit").Text,
+                                    Width = "100",
+                                    ClassName = NopColumnClassDefaults.Button,
+                                    Render = new RenderButtonEdit(new DataUrl("~/Admin/DigitalCodes/CodeItemEdit/"))
+                                },
+                                new ColumnProperty(nameof(Nop.Plugin.Misc.DigitalCodes.Models.CodeItem.CodeItemModel.Id))
+                                {
+                                    Title = @T("Admin.Common.Delete").Text,
+                                    Width = "100",
+                                    ClassName = NopColumnClassDefaults.Button,
+                                    Render = new RenderButtonRemove(@T("Admin.Common.Delete").Text)
+                                }
+                            }
+                        })
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script asp-location="Footer">
+    $(function(){
+        $('#add-codeitem').on('click', function(){
+            var poolId = $('#@Html.IdFor(m => m.SearchCodePoolId)').val();
+            if(!poolId || parseInt(poolId) <= 0){
+                alert('Lütfen önce arama alanından bir Kod Havuzu (Id) belirtin.');
+                return;
+            }
+            window.location.href = '@Url.Content("~/Admin/DigitalCodes/CodeItemCreate")' + '?codePoolId=' + poolId;
+        });
+    });
+</script>
